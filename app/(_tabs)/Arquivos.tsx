@@ -9,7 +9,7 @@ import { NativeBaseProvider } from 'native-base';
 
 export default function listaRecursos() {
 
-  const { listaRecursos } = RecursoService()
+  const { listaRecursos, deleteRecurso } = RecursoService()
 
   type RenderRecursoProps = {
     item: Recurso
@@ -18,10 +18,10 @@ export default function listaRecursos() {
   const RenderRecurso = ({ item }: RenderRecursoProps) => {
     return (
       <Card.Title
-        title="{item.nomeArquivo}"
-        subtitle="{item.descricao}"
+        title={item.nomeArquivo}
+        subtitle={item.descricao}
         left={(props) => <Avatar.Icon {...props} icon="folder" />}
-        right={(props) => <IconButton {...props} icon="dots-vertical" onPress={() => { }} />}
+        right={(props) => <IconButton {...props} icon="close" onPress={() => deleteRecurso(item.id)} />}
       />
     )
   }
@@ -41,12 +41,10 @@ export default function listaRecursos() {
           renderItem={RenderRecurso}
           keyExtractor={(item) => item.id.toString()}
         />
-      </View>
-      <View>
         <AnimatedFAB
           icon={'plus'}
-          label={''}
           extended={false}
+          label={'Label'}
           onPress={() => console.log('Pressed')}
           visible={true}
           animateFrom={'right'}
@@ -64,7 +62,7 @@ const styles = StyleSheet.create({
   },
   fabStyle: {
     right: 16,
-    top: 270,
+    top: 640,
     position: 'absolute',
   },
 });

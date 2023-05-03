@@ -9,7 +9,6 @@ export default function RecursoService() {
 
     useEffect(() => {
         API.get<Recurso[]>('Recurso').then((response) => {
-            console.log(response.data);
             setListaRecursos(response.data);
         }
 
@@ -19,7 +18,6 @@ export default function RecursoService() {
     const deleteRecurso = async (id: number) => {
         try {
             const response = await API.delete<Recurso>('Recurso/' + id)
-            console.log(response.data);
             setListaRecursos((prevListaRecursos) =>
                 prevListaRecursos.filter((recurso) => recurso.id !== id)
             );

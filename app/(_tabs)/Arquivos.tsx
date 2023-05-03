@@ -5,7 +5,8 @@ import { Recurso } from '../../models/Recurso'
 import * as nativeBase from "native-base";
 import { Avatar, Card, IconButton, AnimatedFAB } from 'react-native-paper';
 import { NativeBaseProvider, Modal } from 'native-base';
-import DocumentPicker from 'react-native-document-picker';
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
 
 
 
@@ -31,24 +32,24 @@ export default function listaRecursos() {
   }
 
 
-  const pickDocument = () => {
-    try {
-      console.log("aaaaaaaaaaaaaaaaaaaa");
+  // const pickDocument = () => {
+  //   try {
+  //     console.log("aaaaaaaaaaaaaaaaaaaa");
 
-      const result = DocumentPicker.pick({
-        type: [DocumentPicker.types.allFiles],
-      });
-      console.log(
-        result
-      );
-    } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        console.log('User cancelled the picker');
-      } else {
-        console.log('Error:', err.message);
-      }
-    }
-  }
+  //     const result = DocumentPicker.pick({
+  //       type: [DocumentPicker.types.allFiles],
+  //     });
+  //     console.log(
+  //       result
+  //     );
+  //   } catch (err) {
+  //     if (DocumentPicker.isCancel(err)) {
+  //       console.log('User cancelled the picker');
+  //     } else {
+  //       console.log('Error:', err.message);
+  //     }
+  //   }
+  // }
 
   const onUpload = ({ item }: any) => {
     const fileReader = new FileReader();
@@ -76,6 +77,16 @@ export default function listaRecursos() {
     }
   }
 
+  const pickDocument = async () => {
+    let result = await DocumentPicker.getDocumentAsync({});
+    console.log(result);
+    if (result.type == "success") {
+      let base64 = await FileSystem.readAsStringAsync('file:///data/user/0/host.exp.exponent/cache/DocumentPicker/download.jpeg', { encoding: FileSystem.EncodingType.Base64 });
+      // utilize o valor de base64 aqui
+      console.log(base64)
+    }
+
+  };
 
   const ModalUpload = () => {
 
@@ -120,9 +131,7 @@ export default function listaRecursos() {
         <nativeBase.Stack p="4" space={3}>
           <nativeBase.Stack space={2}>
             <nativeBase.Heading size="md" ml="-1">
-              <nativeBase.Button onPress={() => {
-                handleDocumentSelection()
-              }}>
+              <nativeBase.Button onPress={pickDocument}>
                 Escolher arquivo
               </nativeBase.Button>
             </nativeBase.Heading>
@@ -143,17 +152,18 @@ export default function listaRecursos() {
     </nativeBase.Box>;
   };
 
-  const handleDocumentSelection = async () => {
-    try {
-      const doc = await DocumentPicker.pick();
-      console.log(doc)
-    } catch (err) {
-      if (DocumentPicker.isCancel(err))
-        console.log("User cancelled")
-      else
-        console.log(err)
-    }
-  };
+  // const handleDocumentSelection = async () => {
+  //   try {
+  //     const doc = await DocumentPicker.pick();
+  //     console.log(doc)
+  //   } catch (err) {
+  //     if (DocumentPicker.isCancel(err))
+  //       console.log("User cancelled")
+  //     else
+  //       console.log(err)
+  //   }
+  // };
+
 
 
 

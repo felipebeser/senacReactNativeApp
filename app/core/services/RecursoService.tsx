@@ -28,24 +28,29 @@ export default function RecursoService() {
         }
     };
 
+    const saveRecurso = async (recurso: Recurso) => {
+        try {
+            const response = await API.post<Recurso>('Recurso/', recurso);
 
-    return { listaRecursos, deleteRecurso };
-
-}
-
-export function SalvarRecurso(item: Recurso) {
-
-    const [recurso, setRecurso] = useState<Recurso>();
-
-    useEffect(() => {
-        API.post<Recurso>('Recurso', item).then((response) => {
             console.log(response.data);
-            setRecurso(response.data);
+            setListaRecursos((prevListaRecursos) => {
+                const index = prevListaRecursos.findIndex((r) => r.id === recurso.id);
+                if (index !== -1) {
+                    // Se o recurso já existia na lista, atualizamos seus dados
+                    const newListaRecursos = [...prevListaRecursos];
+                    newListaRecursos[index] = response.data;
+                    return newListaRecursos;
+                } else {
+                    // Se o recurso é novo, adicionamos à lista
+                    return [...prevListaRecursos, response.data];
+                }
+            });
+        } catch (error) {
+            console.log(error);
         }
+    };
 
-        )
-    }, []);
+    return { listaRecursos, deleteRecurso, saveRecurso };
 
-    return {};
 }
 

@@ -8,6 +8,9 @@ import * as FileSystem from 'expo-file-system';
 import { Recurso } from '../../../models/Recurso';
 import RecursoService from '../../../core/services/RecursoService';
 import uuid from 'uuid-random';
+import * as MediaLibrary from 'expo-media-library';
+import * as Sharing from 'expo-sharing';
+import * as Permissions from 'expo-permissions';
 
 
 
@@ -40,42 +43,44 @@ export default function listaRecursos() {
           subtitle={item.descricao}
           left={(props) => <Avatar.Icon {...props} style={styles.button} icon="content-save" />}
           right={(props) => <IconButton {...props} icon="close" onPress={() =>
-            Alert.alert("",
-              "Tem certeza que deseja apagar o arquivo?",
-              [
-                {
-                  text: 'Sim',
-                  onPress: () => {
-                    deleteRecurso(item.id).catch((error) => {
-                      nativeBase.Toast.show({
-                        title: "Erro ao apagar arquivo!",
-                        placement: "top",
-                        backgroundColor: "amber.500",
-                      });
-                      console.log(error);
-                    }).
-                      then(() => {
-                        getListaRecursos(),
-                          nativeBase.Toast.show({
-                            title: "Arquivo apagado com sucesso!",
-                            placement: "top",
-                            backgroundColor: "green.500",
-                          });
-                      });
-                  },
-                  style: 'destructive',
-                },
-                {
-                  text: 'Não',
-                  onPress: () => {
-                    // Lógica a ser executada ao pressionar o Botão 2
-                    return null;
-                  },
-                  style: 'cancel',
-                },
+            downloadFile('http://techslides.com/demos/sample-videos/small.mp4')
+            // Alert.alert("",
+            //   "Tem certeza que deseja apagar o arquivo?",
+            //   [
+            //     {
+            //       text: 'Sim',
+            //       onPress: () => {
+            //         deleteRecurso(item.id).catch((error) => {
+            //           nativeBase.Toast.show({
+            //             title: "Erro ao apagar arquivo!",
+            //             placement: "top",
+            //             backgroundColor: "amber.500",
+            //           });
+            //           console.log(error);
+            //         }).
+            //           then(() => {
+            //             getListaRecursos(),
+            //               nativeBase.Toast.show({
+            //                 title: "Arquivo apagado com sucesso!",
+            //                 placement: "top",
+            //                 backgroundColor: "green.500",
+            //               });
+            //           });
+            //       },
+            //       style: 'destructive',
+            //     },
+            //     {
+            //       text: 'Não',
+            //       onPress: () => {
+            //         // Lógica a ser executada ao pressionar o Botão 2
+            //         return null;
+            //       },
+            //       style: 'cancel',
+            //     },
 
-              ],
-            )} />}
+            //   ],
+            // )
+          } />}
         />
         <NativeBaseProvider>
           <nativeBase.Divider />
@@ -112,6 +117,30 @@ export default function listaRecursos() {
     }
 
   };
+
+  async function downloadFile(url: string) {
+    // Downloading the file
+    let fileLocation = FileSystem.documentDirectory + "small.mp4";
+    console.log(fileLocation)
+    FileSystem.downloadAsync(url, fileLocation)
+      .then(async (url) => {
+        console.log("Download completed!");
+        // Saving the file in a folder name `MyImages`
+        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        if (status === "granted") {
+          console.log("Permission granted");
+          const asset = await MediaLibrary.createAssetAsync(fileLocation)
+          console.log("Asset", asset);
+          //await MediaLibrary.createAlbumAsync("MyVideos", asset, false)
+        }
+
+        // Sharing the downloded file
+        Sharing.shareAsync(fileLocation);
+      })
+      .catch(error => {
+        console.error(error);
+      })
+  }
 
   const ModalUpload = () => {
 
@@ -202,19 +231,7 @@ export default function listaRecursos() {
       item.nomeArquivo.toUpperCase().includes(s.toUpperCase()) || item.descricao.toUpperCase().includes(s.toUpperCase())))
   }
 
-  // const searchFilterFunction = (text) => {
-  //   if (text) {
-  //     const newData = listaRecursos.filter((item) => {
-  //       const itemData = item.nomeArquivo
-  //         ? item.nomeArquivo.toUpperCase()
-  //         : ''.toUpperCase();
-  //       const textData = text.toUpperCase();
-  //       return itemData.indexOf(textData) > -1;
-  //     });
-  //   } else {
-  //     setListaRecursos(listaRecursos)
-  //   }
-  // };
+
 
 
   return (

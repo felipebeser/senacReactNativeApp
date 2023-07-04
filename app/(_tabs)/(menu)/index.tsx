@@ -20,7 +20,7 @@ const Menu = () => {
       <MenuLink name='Configurações' route='/Configuracoes'/>
       <MenuLink name='Ajuda' route='/forum/Comunidades'/>
       <MenuLink name='Requerimento Web' route='/RequerimentoWeb'/>
-
+      <MenuLink name='Feed de Notícias' route='/noticias/Feed'/>
     </View>
   )
 }

@@ -9,19 +9,23 @@ import UserCard from "../../../components/Dashboard/UserCard";
 import { handleError } from "../../../http/API";
 import { useEffect, useState } from "react";
 import { Grupo } from "../../../models/Grupo";
+import { FrequenciaViewModel } from "../../../models/FrequenciaViewModel";
+import { obterFrequenciaByEstudanteIdByPeriodoId } from "../../../core/services/FrequenciaService";
 
 export default function ListaUC() {
 
   const idEstudante = useAuth().authState.userData.estudanteId;
   const [grupos, setGrupos] = useState<Grupo[]>([])
+  const [frequencia, setFrequencia] = useState<FrequenciaViewModel[]>([])
 
   useEffect(() => {
-    ObterGruposByPeriodoAtivoByEstudanteId(idEstudante)
-    .then(res => {
-      setGrupos(res)
-    })
-    .catch(err => handleError(err));
-  },[])
+    Promise.all([ObterGruposByPeriodoAtivoByEstudanteId(idEstudante), obterFrequenciaByEstudanteIdByPeriodoId(idEstudante, 2)])
+      .then(res => {
+        setGrupos(res[0])
+        setFrequencia(res[1])
+      })
+      .catch(err => handleError(err));
+  },[idEstudante])
 
 
   return (
@@ -33,13 +37,15 @@ export default function ListaUC() {
               <>
                 <UserCard/>
                 <ProximasAtividades/>
-                <HeaderCursos />
+                <Text style={{paddingHorizontal: 30, marginTop: 10, fontSize: 24, fontWeight: "600", letterSpacing: -0.5}}>
+                  Meus Cursos
+                </Text>
               </>
             }
             data={grupos}
             estimatedItemSize={8}
             numColumns={1}
-            renderItem={({ item }) => <ListaGrupo {...item} />}
+            renderItem={({ item }) => <ListaGrupo grupo={item} frequencias={frequencia} />}
             keyExtractor={(item) => item.id.toString()}
           />
         </View>
@@ -52,21 +58,6 @@ export default function ListaUC() {
   );
 }
 
-const HeaderCursos = () => {
-  return (
-    <Text
-      style={{
-        paddingHorizontal: 30,
-        marginTop: 10,
-        fontSize: 24,
-        fontWeight: "600",
-        letterSpacing: -0.5,
-      }}
-    >
-      Meus Cursos
-    </Text>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {

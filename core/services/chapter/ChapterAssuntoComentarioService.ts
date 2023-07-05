@@ -5,7 +5,7 @@ import { API, handleError } from "../../../http/API";
 
 export async function getChapterAssuntoComentariosFilterByChapterAssuntoId(id: number | string) {
 
-  const { data } = await API.get(`ChapterAssuntoComentario/filterByChapterAssuntoId/${id}`)
+  const { data } = await API.get<ChapterAssuntoComentario[]>(`ChapterAssuntoComentario/filterByChapterAssuntoId/${id}`)
   return data
 
 }

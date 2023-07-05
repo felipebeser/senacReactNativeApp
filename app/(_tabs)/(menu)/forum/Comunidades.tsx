@@ -1,7 +1,8 @@
 import { Dimensions, FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { getAllChaptersAssunto } from '../../../../core/services/chapter/ChapterAssuntoService'
 import { ChapterTag } from '../../../../models/ChapterTag';
+import { ChapterAssunto } from '../../../../models/ChapterAssunto';
 import { getAllChapterTags } from '../../../../core/services/chapter/ChapterTagService';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../../../contexts/AuthContext';
@@ -11,13 +12,18 @@ import ChapterAssuntoCard from '../../../../components/Forum/ChapterAssuntoCard'
 const { width } = Dimensions.get('screen')
 const Comunidades = () => {
 
-
-  const { chaptersAssunto } = getAllChaptersAssunto();
-  const { chapterTags } = getAllChapterTags();
-
+  const [chaptersAssunto, setChaptersAssunto] = useState<ChapterAssunto[]>([])
+  const [chapterTags, setChapterTags] = useState<ChapterTag[]>([])
   const { push } = useRouter()
   const { usuarioId, usuarioRole } = useAuth().authState.userData
 
+  useEffect(() => {
+    Promise.all([getAllChaptersAssunto(), getAllChapterTags()])
+      .then((response) => {
+        setChaptersAssunto(response[0])
+        setChapterTags(response[1])
+      })
+  },[])
 
   return (
     <View style={styles.container}>

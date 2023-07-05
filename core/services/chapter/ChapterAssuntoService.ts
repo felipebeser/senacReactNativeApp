@@ -5,37 +5,13 @@ import { ChapterAssunto } from "../../../models/ChapterAssunto";
 
 
 
-export function getAllChaptersAssunto() {
-  const [chaptersAssunto, setChaptersAssunto] = useState<ChapterAssunto[]>()
-
-  useEffect(() => {
-    (async() => {
-      try {
-        const {data} = await API.get<ChapterAssunto[]>(`ChapterAssunto`)
-        setChaptersAssunto(data);
-      } catch (error) {
-        handleError(error)
-      }
-    })()
-  },[])
-
-  return { chaptersAssunto }
+export async function getAllChaptersAssunto() {
+  const {data} = await API.get<ChapterAssunto[]>(`ChapterAssunto`)
+  return data
 }
-export function getChaptersAssuntoById(id: number | string) {
-  const [chapterAssunto, setChapterAssunto] = useState<ChapterAssunto>()
-
-  useEffect(() => {
-    (async() => {
-      try {
-        const {data} = await API.get<ChapterAssunto>(`ChapterAssunto/${id}`)
-        setChapterAssunto(data);
-      } catch (error) {
-        handleError(error)
-      }
-    })()
-  },[])
-
-  return { chapterAssunto }
+export async function getChaptersAssuntoById(id: number | string) {
+  const {data} = await API.get<ChapterAssunto>(`ChapterAssunto/${id}`)
+  return data
 }
 
 

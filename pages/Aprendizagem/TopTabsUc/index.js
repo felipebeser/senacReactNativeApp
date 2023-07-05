@@ -17,6 +17,7 @@ function TopTabsUc({grupoId, unidadeCurricularId}) {
     return (
         <Tab.Navigator
             screenOptions={{
+                lazy: true,
                 tabBarLabelStyle: { fontSize: 9, fontWeight: 'bold' },
                 tabBarInactiveTintColor: '#FFF',
                 tabBarActiveTintColor: '#FFF',

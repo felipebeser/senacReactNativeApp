@@ -3,20 +3,8 @@ import { ChapterTag } from "../../../models/ChapterTag";
 import { API, handleError } from "../../../http/API";
 
 
-export function getAllChapterTags () {
-  const [chapterTags, setChapterTags] = useState<ChapterTag[]>()
+export async function getAllChapterTags () {
 
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await API.get<ChapterTag[]>('ChapterTag')
-        setChapterTags(data)
-      } catch (error) {
-        handleError(error)
-      }
-    })()
-  },[])
-
-  return { chapterTags }
+  const { data } = await API.get<ChapterTag[]>('ChapterTag')
+  return data
 }

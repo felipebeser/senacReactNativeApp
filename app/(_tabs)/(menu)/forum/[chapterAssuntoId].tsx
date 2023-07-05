@@ -7,6 +7,8 @@ import { ChapterAssuntoComentario } from '../../../../models/ChapterAssuntoComen
 import { useAuth } from '../../../../contexts/AuthContext'
 import ChapterAssuntoCard from '../../../../components/Forum/ChapterAssuntoCard'
 import ChapterAssuntoComentarioCard from '../../../../components/Forum/ChapterAssuntoComentarioCard'
+import { ChapterAssunto } from '../../../../models/ChapterAssunto'
+import { handleError } from '../../../../http/API'
 
 const { width } = Dimensions.get('screen')
 
@@ -27,13 +29,18 @@ const ChapterAssuntoDetails = () => {
 
   const { usuarioId, usuarioRole } = useAuth().authState.userData
   const { chapterAssuntoId } = useLocalSearchParams<ChapterAssuntoParam>()
-  const { chapterAssunto } = getChaptersAssuntoById(chapterAssuntoId)
   const [chapterAssuntoComentarios, setChapterAssuntoComentarios] = useState<ChapterAssuntoComentario[]>()
+  const [chapterAssunto, setChapterAssunto] = useState<ChapterAssunto>()
   const refInput = useRef(null)
 
   useEffect(() => {
-    getComentarios(chapterAssuntoId)
-  },[])
+    Promise.all([getChaptersAssuntoById(chapterAssuntoId) ,getChapterAssuntoComentariosFilterByChapterAssuntoId(chapterAssuntoId)])
+      .then(res => {
+        setChapterAssunto(res[0])
+        setChapterAssuntoComentarios(res[1])
+      })
+      .catch(err => handleError(err))
+  },[chapterAssuntoId])
 
   const [ createForm, setCreateForm] = useState<createComentarioProps>({
     texto: "",

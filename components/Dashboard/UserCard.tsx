@@ -5,29 +5,41 @@ import Constants from 'expo-constants'
 import * as Progress from 'react-native-progress';
 import { MaterialIcons } from '@expo/vector-icons'
 import { useAuth } from '../../contexts/AuthContext'
-import { getUsuarioByUsuarioId } from '../../core/services/UsuarioService'
+import { getUsuario, getUsuarioByUsuarioId } from '../../core/services/UsuarioService'
 import { SenacCoin } from '../../models/SenacCoin'
 import { fetchSenacCoin } from '../../core/services/api'
-import { getAllBadges } from '../../core/services/badge/BadgeService'
+import { getAllBadges, getBadges } from '../../core/services/badge/BadgeService'
 import { withDecay } from 'react-native-reanimated';
+import { filtrarSenacCoinByUsuarioId, getSenacCoinByUsuarioId } from '../../core/services/SenacCoinService';
+import { Usuario } from '../../models/Usuario';
+import { Badge } from '../../models/Badge';
 
 const UserCard = () => {
 
-  const idUsuario = useAuth().authState.userData.usuarioId
-  const { usuario } = getUsuarioByUsuarioId(idUsuario)
-  const { badges } = getAllBadges()
-  const [senacCoin, setSenacCoin] = useState<SenacCoin>();
+  const {usuarioId} = useAuth().authState.userData
+  // const { usuario } = getUsuarioByUsuarioId(usuarioId)
+  // const { badges } = getAllBadges()
+  // const { senacCoin } = filtrarSenacCoinByUsuarioId(usuarioId)
+
+  const [usuario, setUsuario] = useState<Usuario>()
+  const [badges, setBadges] = useState<Badge[]>([])
+  const [senacCoin, setSenacCoin] = useState<SenacCoin>()
 
   const router = useRouter();
 
   const otherBadgesNumber = badges.length - 3
 
   useEffect(() => {
-    const fetchData = async () => {
-      setSenacCoin(await fetchSenacCoin(idUsuario));
-    };
-    fetchData();
-  }, []);
+      Promise.all([getUsuario(usuarioId), getBadges(), getSenacCoinByUsuarioId(usuarioId)])
+        .then(response => {
+          setUsuario(response[0]);
+          setBadges(response[1]);
+          setSenacCoin(response[2]);
+        })
+
+        .catch(e => console.log(e))
+
+  },[usuarioId])
 
 
   return (
@@ -74,6 +86,7 @@ const UserCard = () => {
       </View>
     )
     : <ActivityIndicator />
+
   )
 }
 

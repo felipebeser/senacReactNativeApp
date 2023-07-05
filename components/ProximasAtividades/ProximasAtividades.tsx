@@ -2,9 +2,7 @@ import { Feather, Entypo } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import Moment from 'moment';
 import 'moment/locale/pt-br';
-import { Dimensions, FlatList, Platform, StyleSheet, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import Constants from 'expo-constants'
+import { Dimensions, FlatList, Platform, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { getAllAtividades } from '../../core/services/ativade/AtividadeService';
 import { Atividade } from '../../models/Atividade';
 

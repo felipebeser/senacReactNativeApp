@@ -1,29 +1,42 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Platform, Dimensions } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Grupo } from '../models/Grupo'
 import { ProgressBar } from 'react-native-paper'
 import { Link, useRouter } from 'expo-router'
 import Colors from '../common/constants/Colors'
 import CircularProgress from 'react-native-circular-progress-indicator'
 import { Ionicons } from '@expo/vector-icons';
-
+import { FrequenciaViewModel } from '../models/FrequenciaViewModel'
+import { obterFrequenciaByGrupoIdByEstudanteId } from '../core/services/FrequenciaService'
+import { useAuth } from '../contexts/AuthContext'
+import { handleError } from '../http/API'
 
 const {width} = Dimensions.get('screen')
+
+
 const ListaGrupo = (grupo: Grupo) => {
   const router = useRouter()
+  const { estudanteId } = useAuth().authState.userData
+  const [frequency, setFrequency] = useState<FrequenciaViewModel>()
+
+  useEffect(() => {
+    (async() => {
+      try{
+        const data = await obterFrequenciaByGrupoIdByEstudanteId(grupo.id, estudanteId)
+        setFrequency(data)
+      } catch (error){
+        handleError(error)
+      }
+    })()
+
+  },[grupo])
+
 
   return (
     <View style={styles.mainCardContainer} >
+      {frequency &&
         <TouchableOpacity onPress={() => router.push(`/ucs/${grupo.id}`)}>
           <View style={[styles.cardContainer, Platform.OS === "android" ? styles.cardContainerAndroid : styles.cardContainerIos]}>
-            {/* <Image
-              style={{height:50, width: 50, borderRadius: 50}}
-              resizeMode='contain'
-              source={
-                require('../assets/images/UCimage.png')
-              }
-              alt="image"
-            /> */}
             <View style={styles.cardHeaderContainer}>
               <Text style={styles.cardTitle} numberOfLines={1} adjustsFontSizeToFit={false}>
                 {grupo.unidadeCurricular.nome}
@@ -66,7 +79,7 @@ const ListaGrupo = (grupo: Grupo) => {
               </View>
               <View style={styles.progressStats}>
                 <CircularProgress
-                  value={parseInt(grupo.frequencia)}
+                  value={parseInt(frequency.frequencia)}
                   radius={30}
                   inActiveStrokeColor={'#2ecc71'}
                   inActiveStrokeOpacity={0.2}
@@ -82,6 +95,7 @@ const ListaGrupo = (grupo: Grupo) => {
           </View>
 
         </TouchableOpacity>
+      }
       </View>
   )
 }

@@ -1,25 +1,32 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { FlashList } from "@shopify/flash-list";
-import { ObterGruposByPeriodoAtivoByEstudanteIdWithFrequency } from "../../../core/services/GrupoService";
+import { ObterGruposByPeriodoAtivoByEstudanteId } from "../../../core/services/GrupoService";
 import ListaGrupo from "../../../components/ListaGrupo";
-import ProfileScreen from "../../../components/Dashboard/ProfileScreen";
 import Colors from "../../../common/constants/Colors";
 import { useAuth } from "../../../contexts/AuthContext";
-import { getAllAtividades } from "../../../core/services/ativade/AtividadeService";
 import ProximasAtividades from "../../../components/ProximasAtividades/ProximasAtividades";
 import UserCard from "../../../components/Dashboard/UserCard";
-import { Divider } from "native-base";
+import { handleError } from "../../../http/API";
+import { useEffect, useState } from "react";
+import { Grupo } from "../../../models/Grupo";
 
 export default function ListaUC() {
 
   const idEstudante = useAuth().authState.userData.estudanteId;
-  const { grupos, isLoaded } = ObterGruposByPeriodoAtivoByEstudanteIdWithFrequency(
-    idEstudante,
-  );
+  const [grupos, setGrupos] = useState<Grupo[]>([])
+
+  useEffect(() => {
+    ObterGruposByPeriodoAtivoByEstudanteId(idEstudante)
+    .then(res => {
+      setGrupos(res)
+    })
+    .catch(err => handleError(err));
+  },[])
+
 
   return (
     <>
-      {isLoaded ? (
+      {grupos ? (
         <View style={styles.container}>
           <FlashList
             ListHeaderComponent={
@@ -35,10 +42,11 @@ export default function ListaUC() {
             renderItem={({ item }) => <ListaGrupo {...item} />}
             keyExtractor={(item) => item.id.toString()}
           />
-          {/* <ProfileScreen /> */}
         </View>
       ) : (
-        <Text>Carregando..</Text>
+        <View style={{flex: 1, alignItems: 'center'}}>
+          <ActivityIndicator/>
+        </View>
       )}
     </>
   );

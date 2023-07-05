@@ -1,5 +1,5 @@
 import { ControleExecucao } from '../../models/ControleExecucao';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { API, handleError } from '../../http/API';
 import { AxiosError, AxiosResponse } from 'axios';
 import { Grupo } from '../../models/Grupo';
@@ -43,22 +43,9 @@ export function getGruposByEstudanteIdByPeriodoId(idEstudante: number, idPeriodo
   return { grupos }
 }
 
-export function ObterGruposByPeriodoAtivoByEstudanteId(idEstudante: number) {
-
-  const [grupos, setGrupos] = useState<Grupo[]>([])
-
-  useEffect(() => {
-    API.get<Grupo[]>(`/Grupo/ObterGruposByPeriodoAtivoByEstudanteId/${idEstudante}`)
-    .then((response: AxiosResponse) => {
-      setGrupos(response.data);
-    })
-    .catch((error: AxiosError<Grupo[]>) => {
-      handleError(error)
-    })
-
-  },[])
-
-  return { grupos }
+export const ObterGruposByPeriodoAtivoByEstudanteId = async (idEstudante: number | string) => {
+  const { data } = await API.get<Grupo[]>(`/Grupo/ObterGruposByPeriodoAtivoByEstudanteId/${idEstudante}`)
+  return data
 }
 
 export function ObterGruposByPeriodoAtivoByEstudanteIdWithFrequency(idEstudante: number | string) {
@@ -69,22 +56,28 @@ export function ObterGruposByPeriodoAtivoByEstudanteIdWithFrequency(idEstudante:
   useEffect(() => {
     const fetchData = async () =>{
       try {
+        const inicio = Date.now()
         const {data: grupoData} = await API.get<Grupo[]>(`/Grupo/ObterGruposByPeriodoAtivoByEstudanteId/${idEstudante}`)
         const idPeriodo = grupoData[0]?.periodoId
         const {data: freqData} = await API.get<FrequenciaViewModel[]>(`/Frequencia/obterFrequenciaByEstudanteIdByPeriodoId/${idEstudante}/${idPeriodo}`)
 
-        grupoData.forEach(
-          (g) => {
-              var freq = freqData.filter((f) =>(f.grupoId == g.id));
-              if(freq.length != 0){
-                g.frequencia = freq[0].frequencia;
-              }
-              else {
-                g.frequencia = '0'
-              }
-          }
-        )
+        if(freqData){
+
+          grupoData.forEach(
+            (g) => {
+                var freq = freqData.filter((f) =>(f.grupoId == g.id));
+                if(freq.length != 0){
+                  g.frequencia = freq[0].frequencia;
+                }
+                else {
+                  g.frequencia = '0'
+                }
+            }
+          )
+        }
         setGrupos(grupoData)
+        const final = Date.now()
+        console.log(final - inicio)
         setIsLoaded(true)
 
       } catch (error) {

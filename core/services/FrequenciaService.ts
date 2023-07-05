@@ -41,3 +41,8 @@ export function getFrequenciaByEstudanteIdByPeriodoId(idEstudante: number, idPer
   return {frequencias};
 }
 
+export async function obterFrequenciaByGrupoIdByEstudanteId(idGrupo: string | number, idEstudante: string | number) {
+  const {data} = await API.get<FrequenciaViewModel>(`Frequencia/obterFrequenciaByGrupoIdByEstudanteId/${idGrupo}/${idEstudante}`)
+  return data;
+}
+

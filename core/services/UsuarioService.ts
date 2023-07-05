@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { API } from '../../http/API';
+import { API, handleError } from '../../http/API';
 import { AxiosError, AxiosResponse } from 'axios';
 import { Usuario } from '../../models/Usuario';
 
@@ -31,5 +31,14 @@ export function getUsuarioByUsuarioId(idUsuario: string) {
   },[])
   
   return { usuario }
+}
+
+export async function getUsuario(usuarioId: string) {
+  try {
+    const { data } = await API.get<Usuario>(`Usuario/${usuarioId}`)
+    return data
+  } catch (error) {
+    handleError(error)
+  }
 }
 

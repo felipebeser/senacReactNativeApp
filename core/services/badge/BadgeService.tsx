@@ -121,3 +121,8 @@ export function createBadge(badgeModel: Badge) {
 
     return {badge, isLoading}
 }
+
+export async function getBadges() {
+    const { data } = await API.get<Badge[]>('Badge')
+    return data
+}

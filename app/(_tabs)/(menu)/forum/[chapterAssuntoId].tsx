@@ -140,9 +140,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   inputDescription: {
-    height: 100
+    height: 70
   },
   inputContainer: {
+    padding: 10,
     gap: 10
   }
 })

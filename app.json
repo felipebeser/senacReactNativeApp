@@ -4,8 +4,8 @@
     "web": {
       "bundler": "metro"
     },
-    "name": "testeExpoRouter",
-    "slug": "testeExpoRouter",
+    "name": "senacReactNativeApp",
+    "slug": "senacReactNativeApp",
     "orientation" : "portrait",
     "splash": {
       "image" : "./assets/images/splash.png",

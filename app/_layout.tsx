@@ -1,9 +1,6 @@
-import { Drawer } from 'expo-router/drawer'
 import { AuthProvider, useAuth } from '../contexts/AuthContext'
 import { StatusBar } from 'expo-status-bar'
 import { useFonts } from 'expo-font'
-import { UsarioContext } from '../contexts/UsuarioContext'
-import { getUsuarioByUsuarioId } from '../core/services/UsuarioService'
 import { useEffect } from 'react'
 import { Stack } from 'expo-router'
 

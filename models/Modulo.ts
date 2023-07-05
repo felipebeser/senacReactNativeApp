@@ -1,4 +1,5 @@
 import { Oferta } from "./Oferta"
+import { UnidadeCurricular } from "./UnidadeCurricular"
 
 export type Modulo = {
   id:	number
@@ -6,4 +7,5 @@ export type Modulo = {
   cargaHoraria:	number
   ofertaId:	number
   oferta:	Oferta
+  unidadesCurrisulares: UnidadeCurricular[]
 }

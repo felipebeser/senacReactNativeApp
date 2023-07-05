@@ -21,6 +21,7 @@ const Menu = () => {
       <MenuLink name='Ajuda' route='(menu)'/>
       <MenuLink name='Requerimento Web' route='/RequerimentoWeb'/>
       <MenuLink name='Feed de Notícias' route='/noticias/Feed'/>
+      <MenuLink name='Trilha do Curso' route='/trilhaCurso'/>
     </View>
   )
 }

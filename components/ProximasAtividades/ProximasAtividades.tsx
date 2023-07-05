@@ -1,4 +1,5 @@
-import { Feather, Entypo } from '@expo/vector-icons';
+import Entypo  from '@expo/vector-icons/Entypo';
+import Feather from '@expo/vector-icons/Feather';
 import { Link, useRouter } from 'expo-router';
 import Moment from 'moment';
 import 'moment/locale/pt-br';
